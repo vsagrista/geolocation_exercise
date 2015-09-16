@@ -58,6 +58,7 @@ function renderMap(x,y){
 function checkIfArrived (latitude,longitude) {
 	if (latitude === options.target_lat && longitude === options.target_long){
 		console.log("Yeahhhh you made it!");
+		navigator.geolocation.clearWatch(watchID);
 	}
 	else {
 		console.log("You haven't made it yet. Current coordenates: " + latitude + " , " + longitude);
