@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<h1>Click to see your current position <button>Find!</button></h1>
+<p id="position"></p>
+<div class="container"></div>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+
+// Token for mapbox website
+
+var API_TOKEN = 'pk.eyJ1IjoiY2l0aXplbnZzbCIsImEiOiJjaWVtc3Y0cTYwMDJpdDlrazJkNWd0aHV0In0.V3Iab4fzvJpo_2RG7_Bc1A';
+
+// Functions to get current location
+
+function onLocation (position) {
+		document.getElementById('position').innerHTML = "Lat: " + position.coords.latitude + ", Long: " + position.coords.longitude
+		renderMap(position.coords.longitude,position.coords.latitude)
+}
+
+function onError (error){
+	console.log(error);
+}
+
+var options = {
+	enableHighAccuracy: true
+}
+
+
+function renderMap(x,y){
+
+	var url = "https://api.mapbox.com/v4/mapbox.streets-satellite/"+x+","+y+",13/1024x500.png?access_token="+ 
+		API_TOKEN+""
+	$(".container").append("    <img class='img_map' src=' " + url + " '/>")   
+
+}
+
+$(document).on("click", "button", function(event){
+	event.preventDefault();
+	navigator.geolocation.getCurrentPosition(onLocation,onError,options)
+
+});
+
+</script>
+</body>
+</html>
+ 
