@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title></title>
+	<title>Geolocation exercise</title>
 </head>
 <body>
 <h1>Click to see your current position <button>Find!</button></h1>
@@ -9,39 +9,61 @@
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
 
-// Token for mapbox website
+// Click to trigger function that displays current location on p tag and generates a map from mapbox API
+
+$(document).on("click", "button", function(event){
+	event.preventDefault();
+	navigator.geolocation.getCurrentPosition(onLocation,onError,options);
+});
+
+// Personal token for mapbox API
 
 var API_TOKEN = 'pk.eyJ1IjoiY2l0aXplbnZzbCIsImEiOiJjaWVtc3Y0cTYwMDJpdDlrazJkNWd0aHV0In0.V3Iab4fzvJpo_2RG7_Bc1A';
 
-// Functions to get current location
+// Options includes where we want to get
+
+var options = {
+	enableHighAccuracy: true,
+	target_lat        : 3.0000, 
+  	target_long       : 2.7000
+}
+
+var watchID = navigator.geolocation.watchPosition(function(position) {
+  checkIfArrived(position.coords.latitude, position.coords.longitude);
+});
+
+// Functions to get and display current location and map
 
 function onLocation (position) {
-		document.getElementById('position').innerHTML = "Lat: " + position.coords.latitude + ", Long: " + position.coords.longitude
-		renderMap(position.coords.longitude,position.coords.latitude)
+		document.getElementById('position').innerHTML = "Lat: " + position.coords.latitude + ", Long: " + position.coords.longitude;
+		var latitude = position.coords.latitude;
+		var longitude = position.coords.longitude;
+		
+		renderMap(longitude,latitude);
 }
 
 function onError (error){
 	console.log(error);
 }
 
-var options = {
-	enableHighAccuracy: true
-}
-
-
 function renderMap(x,y){
-
 	var url = "https://api.mapbox.com/v4/mapbox.streets-satellite/"+x+","+y+",13/1024x500.png?access_token="+ 
 		API_TOKEN+""
-	$(".container").append("    <img class='img_map' src=' " + url + " '/>")   
-
+	$('.img_map').remove();
+	$(".container").append("<img class='img_map' src=' " + url + " '/>");  
 }
 
-$(document).on("click", "button", function(event){
-	event.preventDefault();
-	navigator.geolocation.getCurrentPosition(onLocation,onError,options)
+// Functio to check whether user has arrived to selected coordenates
 
-});
+function checkIfArrived (latitude,longitude) {
+	if (latitude === options.target_lat && longitude === options.target_long){
+		console.log("Yeahhhh you made it!");
+	}
+	else {
+		console.log("You haven't made it yet. Current coordenates: " + latitude + " , " + longitude);
+		console.log("You want to reach: " + options.target_lat + " , " + options.target_long);
+	}
+}
 
 </script>
 </body>
